@@ -295,7 +295,14 @@ pub enum SourceFile<'ctx> {
 impl<'ctx> fmt::Debug for SourceFile<'ctx> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            SourceFile::File(path, _) => fmt::Debug::fmt(path, f),
+            SourceFile::File(path, ty) => {
+                fmt::Debug::fmt(path, f)?;
+                if let Some(t) = ty {
+                    write!(f, " as {:?}", t)
+                } else {
+                    write!(f, " as <unknown>")
+                }
+            }
             SourceFile::Group(ref srcs) => fmt::Debug::fmt(srcs, f),
         }
     }
